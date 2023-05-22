@@ -1,0 +1,29 @@
+.external-container{
+    margin: 0%;
+    padding: 5px;
+}
+
+.internal-container{
+    padding: 5px;
+}
+.product-ex{
+    margin: 10px;
+}
+
+.product-int{
+    display: flex;
+    flex-direction:row ;
+    justify-content: space-around;
+    align-items: center;
+}
+ 
+.product-int button{
+    width: 100px;
+    height: 100px;
+}
+
+.price{
+    font-weight: 900;
+    font-size:large;
+    font-style: italic;
+}
