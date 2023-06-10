@@ -2,7 +2,7 @@ const express = require('express')
 const app =  express()
 const razorpay = require('razorpay')
 const cors = require('cors')
-
+require('dotenv').config();
 app.use(cors());
 app.use(express.json({ extended: false }));
 
@@ -15,8 +15,8 @@ app.post('/payment/orders',async(req,res)=>{
             receipt : "receipt_order_01"
         }
         const instance = new razorpay({
-            key_id : "rzp_test_iKeJwRRYd7XA1L",
-            key_secret : "XKWFFBSrYwF82WmntiCgtA4u"
+            key_id : process.env.KEY_ID,
+            key_secret : process.env.KEY_SECRET,
         });
         const order = await instance.orders.create(option);
         if(!order)
