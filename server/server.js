@@ -1,14 +1,16 @@
 const express = require('express')
 const app =  express()
 const razorpay = require('razorpay')
+const cors = require('cors')
 
+app.use(cors());
 app.use(express.json({ extended: false }));
 
-app.post('/payment/order',async(req,res)=>{
+app.post('/payment/orders',async(req,res)=>{
     try{
 
         const option = {
-            amount : 5000,
+            amount : 1000,
             currency : "INR",
             receipt : "receipt_order_01"
         }
@@ -27,7 +29,37 @@ app.post('/payment/order',async(req,res)=>{
 })
 
 app.post('/payment/success',async(req,res)=>{
-    
+    try {
+
+        const {
+            orderCreationId,
+            razorpayPaymentId,
+            razorpayOrderId,
+            razorpaySignature,
+        } = req.body;
+
+
+        const shasum = crypto.createHmac("sha256", "w2lBtgmeuDUfnJVp43UpcaiT");
+
+        shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+
+        const digest = shasum.digest("hex");
+
+        // comaparing our digest with the actual signature
+        if (digest !== razorpaySignature)
+            return res.status(400).json({ msg: "Transaction not legit!" });
+
+        // THE PAYMENT IS LEGIT & VERIFIED
+        // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
+
+        res.json({
+            msg: "success",
+            orderId: razorpayOrderId,
+            paymentId: razorpayPaymentId,
+        });
+    } catch (error) {
+        res.status(500).send(error);
+    }
 })
 
 app.listen(8080, ()=>{
